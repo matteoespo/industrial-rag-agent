@@ -1,0 +1,15 @@
+# Web Framework & Server
+fastapi==0.110.0
+uvicorn==0.29.0
+
+# AI & LangChain Ecosystem
+langchain==0.1.13
+langchain-openai==0.1.1
+langchain-community==0.0.29
+pypdf==4.1.0
+
+# Vector Database
+chromadb==0.4.24
+
+# Environment variables
+python-dotenv==1.0.1

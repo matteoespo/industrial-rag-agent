@@ -1,0 +1,29 @@
+services:
+  # AI model server (Ollama)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: industrial-rag-ollama
+    ports:
+      - "11434:11434"
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    volumes:
+      - ollama_storage:/root/.ollama
+
+  # FastAPI Backend
+  api:
+    build: .
+    container_name: industrial-rag-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./chroma_db:/app/chroma_db
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+    depends_on:
+      - ollama
+
+volumes:
+  ollama_storage:
