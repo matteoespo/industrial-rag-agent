@@ -7,6 +7,7 @@ env/
 
 # Data e Vector Database
 data/
+pdfs/
 chroma_db/
 
 # Secret keys

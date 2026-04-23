@@ -13,17 +13,26 @@ services:
 
   # FastAPI Backend
   api:
-    build: .
+    build: backend/
     container_name: industrial-rag-api
     ports:
       - "8000:8000"
     volumes:
       - ./data:/app/data
-      - ./chroma_db:/app/chroma_db
     environment:
       - OLLAMA_BASE_URL=http://ollama:11434
     depends_on:
       - ollama
+
+  # Streamlit Frontend
+  web:
+    build: frontend/
+    container_name: industrial-rag-web
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+
 
 volumes:
   ollama_storage:
