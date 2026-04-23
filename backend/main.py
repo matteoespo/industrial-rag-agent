@@ -1,8 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from app.ai.rag_engine import get_rag_chain
+from ai.rag_engine import get_rag_chain
 
-# Initialize FastAPI app
 app = FastAPI(
     title="Industrial AI Agent API",
     description="Local RAG system for technical manuals using Llama3 and Ollama.",

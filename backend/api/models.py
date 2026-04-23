@@ -1,0 +1,1 @@
+# Pydantic schemas (what a QueryRequest or ChatResponse JSON looks like)
