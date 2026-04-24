@@ -3,49 +3,40 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.vectorstores import Chroma
+import core.config as config
 
-# configs
-DB_DIR = "chroma_db"
-MANUAL_PATH = "data/manual.pdf"
-EMBEDDING_MODEL = "nomic-embed-text"
 
 def ingest_manual():
     """
-    Loads a PDF, splits it into chunks, and stores embeddings in a local ChromaDB.
+    Loads a PDF, splits it into chunks and stores embeddings in a local chromadb
     """
-    print(f"--- Starting ingestion process for: {MANUAL_PATH} ---")
-    
-    # Load the PDF document
-    if not os.path.exists(MANUAL_PATH):
-        print(f"Error: {MANUAL_PATH} not found.")
+
+    # load the PDF document
+    if not os.path.exists(config.MANUAL_PATH):
+        print(f"Error: {config.MANUAL_PATH} not found")
         return
 
-    loader = PyPDFLoader(MANUAL_PATH)
+    loader = PyPDFLoader(config.MANUAL_PATH)
     documents = loader.load()
-    print(f"Successfully loaded {len(documents)} pages.")
+    print(f"Successfully loaded {len(documents)} pages")
 
-    # Split text into chunks
+    # split into chunks
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000, # using 1000 chars to keep the context
-        chunk_overlap=150, # 150 chars overlap to not cut sentences
+        chunk_overlap=150, # 150 chars overlap to not cut sentences (keep context)
         separators=["\n\n", "\n", ".", " ", ""]
     )
     chunks = text_splitter.split_documents(documents)
-    print(f"Document split into {len(chunks)} chunks.")
+    print(f"Document split into {len(chunks)} chunks")
 
-    # embedding model init
-    print(f"Initializing local embeddings using model: {EMBEDDING_MODEL}...")
-    embeddings = OllamaEmbeddings(model=EMBEDDING_MODEL)
+    # embedding model
+    embeddings = OllamaEmbeddings(model=config.EMBEDDING_MODEL)
 
-    # vector db (Chroma DB)
-    print("Generating embeddings and saving to local vector database...")
+    # vector db
     vector_db = Chroma.from_documents(
         documents=chunks,
         embedding=embeddings,
-        persist_directory=DB_DIR
+        persist_directory=config.DB_DIR
     )
     
-    print(f"Database created successfully in folder: '{DB_DIR}'")
-
-if __name__ == "__main__":
-    ingest_manual()
+    print(f"Database created successfully in folder: {config.DB_DIR}")

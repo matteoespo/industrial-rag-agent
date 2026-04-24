@@ -5,4 +5,5 @@ class QueryRequest(BaseModel):
     query: str
 
 class ChatResponse(BaseModel):
-    respose: str
+    question: str
+    answer: str
