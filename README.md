@@ -1,4 +1,4 @@
-# Industrial RAG Agent
+# DocuQuery RAG Agent
 This project implements an Agentic RAG system designed to process and query industrial technical documentation. The architecture is fully containerized and designed to run entirely on-premise using local LLMs.
 
 ## Architecture Overview
