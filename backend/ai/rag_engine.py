@@ -1,6 +1,4 @@
-from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.vectorstores import Chroma
-from langchain_community.chat_models import ChatOllama
 from langchain.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
@@ -48,10 +46,7 @@ def get_rag_chain():
 if __name__ == "__main__":
     # test
     chain = get_rag_chain()
-    
     query = "What are the main safety instructions for this machine?"
-    print(f"Querying: {query}")
-    
     response = chain.invoke({"input": query})
     print("\nRESPONSE: ")
     print(response["answer"])

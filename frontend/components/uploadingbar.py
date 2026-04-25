@@ -5,7 +5,7 @@ import streamlit as st
 import time
 
 def render_uploadingbar():
-    with st.container(border=True):
+    with st.container(border=True, height=500):
 
         st.file_uploader("Load the PDF file")
         '''

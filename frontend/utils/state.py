@@ -1,6 +1,18 @@
 '''
-Manages chat history (st.session_state)
+Manages chat history key and other session keys
 '''
+import streamlit as st
 
 def init_session_state():
-    pass
+    
+    if "messages" not in st.session_state:
+        st.session_state["messages"] = []
+    
+    st.session_state["messages"].append({
+        "role": "assistant",
+        "content": "Hi! I'm your technical assistant. Ask me what you need to find in the pdf."
+    })
+
+    if "pdf_uploaded" not in st.session_state:
+        st.session_state["pdf_uploaded"] = False
+
