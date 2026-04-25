@@ -2,10 +2,10 @@
 The entrypoint
 '''
 import streamlit as st
-import requests
 from utils import state
 
 st.set_page_config(layout="wide")
+state.init_session_state()
 
 titleclmn, statusclmn, memoryclmn, historyclmn = st.columns([3,1,1,1])
 with titleclmn:
@@ -22,7 +22,6 @@ with historyclmn:
     st.write("...")
     
 
-state.init_session_state()
 
 dashboard = st.Page(
     "pages/dashboard.py", title="Dashboard", icon=":material/dashboard:", default=True
