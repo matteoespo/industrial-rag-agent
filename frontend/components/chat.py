@@ -21,7 +21,7 @@ def render_chat_window():
                     "role": "assistant",
                     "content": content["answer"]
                 })
-            st.rerun(scope="fragment")
+            st.rerun()
     prompt = st.chat_input("Ask something")
     if prompt:
         st.session_state["messages"].append({

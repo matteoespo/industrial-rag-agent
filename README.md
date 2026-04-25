@@ -1,52 +1,69 @@
 # DocuQuery RAG Agent
-This project implements an Agentic RAG system designed to process and query industrial technical documentation. The architecture is fully containerized and designed to run entirely on-premise using local LLMs.
 
-## Architecture Overview
-The system follows a modular architecture, decoupling the AI engine from the API layer to ensure scalability and maintainability.
+![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=flat&logo=langchain&logoColor=white)
 
-## Technology Stack
-**Backend:** FastAPI (Python) for low-latency, asynchronous API handling.
+An on-premise RAG system designed to process and query technical documentation (PDFs). 
 
-**AI Framework:** LangChain & LangGraph for orchestration of agentic workflows.
+This project runs entirely locally using open-source LLMs. It features a microservices architecture decoupling the frontend, the API layer, and the AI reasoning engine.
 
-**LLM Engine:** Llama 3 (8B) via Ollama for local, privacy-compliant reasoning.
+## User Interface
 
-**Embeddings:** nomic-embed-text for high-performance semantic search.
+![DocuQuery UI Placeholder](docs/screenshot.png) 
 
-**Vector Database:** ChromaDB for local persistent storage of technical chunks.
+## Architecture Stack
 
-**Infrastructure:** Docker & Docker Compose for deployment.
+The system is fully containerized and divided into three main microservices:
 
-## Features
-**Data Privacy (On-Premise):** The entire pipeline runs locally, ensuring that sensitive data never leaves the internal infrastructure.
+* **Frontend (Streamlit):** A reactive, chat-based UI. Features dynamic state management, real-time metrics, and document ingestion.
+* **Backend API (FastAPI):** Handles routing, input/output validation via Pydantic, and file uploads.
+* **AI Engine (LangChain & Ollama):** 
+    * **LLM:** `Llama 3 (8B)` via Ollama for local reasoning.
+    * **Embeddings:** `nomic-embed-text` for semantic search.
+    * **Vector DB:** `ChromaDB` for persistent local storage of chunked data.
 
-**Hallucination Mitigation:** Implements a temperature-controlled RAG chain with strict prompt engineering to ensure factual accuracy.
-
-**Scalable Infrastructure:** Microservices-based deployment allows for independent scaling of the API and the inference engine.
-
-**API Validation:** Rigorous input/output validation using Pydantic models.
+## Key Features
+* **100% Data Privacy:** Everything runs on your local network. No data ever leaves the infrastructure.
+* **Microservices Design:** API and UI can be scaled or updated independently.
+* **Asynchronous Ingestion:** Upload a PDF from the UI and the backend handles chunking, embedding, and database storage on the fly.
+* **Conditional Rendering:** The UI adapts based on the agent's readiness state.
 
 ## Quick Start
 
-**Clone the repository:**
+1. **Clone the repository:**
+    ```bash
+    git clone https://github.com/matteoespo/docuquery-rag-agent.git
+    cd docuquery-rag-agent
+    ```
 
-```
-git clone https://github.com/yourusername/industrial-rag-agent.git
-cd industrial-rag-agent
-```
-**Deploy the stack:**
+2. **Deploy the stack with Docker**
 
-```
-docker compose up -d
-```
+    ```bash
+    docker-compose up -d --build
+    ```
 
-**Pull models within the container:**
+3. **Pull the local models**
 
-```
-docker exec -it industrial-rag-ollama ollama pull llama3
-docker exec -it industrial-rag-ollama ollama pull nomic-embed-text
-```
+    *Run inside the Ollama container:*
 
-**Access the API Documentation:**
+    ```bash
+    docker exec -it docuquery-rag-ollama ollama pull llama3
+    docker exec -it docuquery-rag-ollama ollama pull nomic-embed-text
+    ```
 
-Navigate to http://localhost:8000/docs to test the endpoints via Swagger UI.
+## Access the Application
+
+* **Web UI:** Navigate to http://localhost:8501 to upload a pdf and start chatting.
+* **API Docs:** Navigate to http://localhost:8000/docs to test endpoints via Swagger UI.
+
+## Roadmap & Next Steps
+
+This project is actively evolving. The immediate next steps focus on shifting from a standard RAG pipeline to an Agentic Workflow:
+
+* **LangGraph Integration:** Move from linear LangChain LCEL to a stateful graph architecture.
+* **Query Routing:** Teach the agent to distinguish between casual greetings and technical queries (bypassing the Vector DB when unnecessary).
+* **Self-Reflective RAG:** Implement a "Grader" node that evaluates retrieved documents. If the retrieved chunks are irrelevant, the agent will refuse to answer or rewrite the query instead of hallucinating.
+* **Multi-Document Support:** Allow the ingestion of multiple PDFs simultaneously.

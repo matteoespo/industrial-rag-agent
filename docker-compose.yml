@@ -2,7 +2,7 @@ services:
   # AI model server (Ollama)
   ollama:
     image: ollama/ollama:latest
-    container_name: industrial-rag-ollama
+    container_name: docuquery-rag-ollama
     ports:
       - "11434:11434"
     dns:
@@ -14,7 +14,7 @@ services:
   # FastAPI Backend
   api:
     build: backend/
-    container_name: industrial-rag-api
+    container_name: docuquery-rag-api
     ports:
       - "8000:8000"
     volumes:
@@ -27,7 +27,7 @@ services:
   # Streamlit Frontend
   web:
     build: frontend/
-    container_name: industrial-rag-web
+    container_name: docuquery-rag-web
     ports:
       - "8501:8501"
     depends_on:
