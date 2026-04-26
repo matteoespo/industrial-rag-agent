@@ -1,26 +1,27 @@
 from langchain_community.vectorstores import Chroma
-from langchain.prompts import ChatPromptTemplate
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_retrieval_chain
+from langchain_core.prompts import ChatPromptTemplate
+from ai.state import AgentState
 import core.config as config
 from ai.llm import get_llm, get_embeddings
 
+# load llms and vector db
+llm = get_llm()
+embeddings = get_embeddings()
+vector_db = Chroma(persist_directory=config.DB_DIR, embedding_function=embeddings)
 
-def get_rag_chain():
-    """
-    Initializes the RAG chain by connecting the local vector DB with Llama3
-    """
-    # load llms
-    embeddings = get_embeddings()
-    llm = get_llm()
-    
-    # connect the vector db
-    vector_db = Chroma(persist_directory=config.DB_DIR, embedding_function=embeddings)
-    
-    # retriever (top k set to 3)
-    retriever = vector_db.as_retriever(search_kwargs={"k": 3})
 
-    # System Prompt
+def retrieve(state: AgentState):
+    """Node to retrieve relevant documents from the vector database based on the agent's query"""
+    question = state["query"]
+    docs = vector_db.similarity_search(question, k=3)
+    return {"documents": docs}
+
+
+def generate(state: AgentState):
+    """Node to generate an answer using the retrieved documents and the agent's query"""
+    question = state["query"]
+    context = "\n\n".join([doc.page_content for doc in state["documents"]])
+
     system_prompt = (
         "You are a technical assistant."
         "Use the following pieces of retrieved context to answer the question."
@@ -33,20 +34,11 @@ def get_rag_chain():
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", system_prompt),
-            ("human", "{input}"),
+            ("human", "{question}"),
         ]
     )
 
-    # create the chains
-    question_answer_chain = create_stuff_documents_chain(llm, prompt)
-    rag_chain = create_retrieval_chain(retriever, question_answer_chain)
-    
-    return rag_chain
+    chain = llm | prompt
+    response = chain.invoke({"context": context, "question": question})
 
-if __name__ == "__main__":
-    # test
-    chain = get_rag_chain()
-    query = "What are the main safety instructions for this machine?"
-    response = chain.invoke({"input": query})
-    print("\nRESPONSE: ")
-    print(response["answer"])
+    return {"answer": response.content}

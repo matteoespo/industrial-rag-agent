@@ -1,10 +1,12 @@
 import os
+from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 import core.config as config
 from ai.llm import get_embeddings
 
+load_dotenv()
 
 def ingest_manual():
     """
